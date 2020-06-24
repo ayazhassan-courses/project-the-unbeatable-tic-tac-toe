@@ -1,16 +1,19 @@
-ai = 'X'
+from tkinter import *
+from tkinter import messagebox
+import random as r
 
+###############   Main Program #################
+root=Tk()                   #Window defined
+root.title("Tic-Tac-Toe")   #Title given
+# a=r.choice(['O','X'])       #Two operators defined
 human = 'O'
-
 currentPlayer = human
-
+ai = 'X'
+colour={'O':"deep sky blue",'X':"lawn green"}
 board = [ [ '' for i in range(0,3)] for i in range(0,3)]
+b=[[],[],[]]
 
-print(board)
-
-print()
-
- 
+########################################################################################################33
 
 def checkWinner():
 
@@ -108,6 +111,7 @@ def best_move(currentPlayer):
  
 
     board[move[0]][move[1]] = ai 
+    b[move[0]][move[1]].config(text=ai,state=DISABLED,disabledforeground=colour[ai])
 
     currentPlayer = human 
 
@@ -189,81 +193,67 @@ def minimax(board,depth,isMaximizing):
 
         return bestScore
 
- 
+##########################################################################################################
 
-def playersTurn(currentPlayer):
 
+def button(frame):          #Function to define a button
+    b=Button(frame,padx=1,bg="papaya whip",width=3,text="",font=('arial',60,'bold'),relief="sunken",bd=10)
+    return b
+
+def reset():                #Resets the game
+    for i in range(3):
+        for j in range(3):
+                b[i][j]["text"]=""
+                board[i][j] = ""
+                b[i][j]["state"]=NORMAL
     
 
-    if currentPlayer == human:
-
-        dumdum = int(input('Its your turn  '))
-
-        if dumdum == 1: board[0][0] = human
-
-        elif dumdum == 2: board[0][1] = human
-
-        elif dumdum == 3: board[0][2] = human
-
-        elif dumdum == 4: board[1][0] = human
-
-        elif dumdum == 5: board[1][1] = human
-
-        elif dumdum == 6: board[1][2] = human
-
-        elif dumdum == 7: board[2][0] = human
-
-        elif dumdum == 8: board[2][1] = human
-
-        elif dumdum == 9: board[2][2] = human
-
- 
-
-        print('Human turns')
-
-        print()
-
-        print(str(board[0])+'\n'+str(board[1])+'\n'+str(board[2])+'\n')
-
-        print()
-
-        
+def click(row,col):
+        b[row][col].config(text=human,state=DISABLED,disabledforeground=colour[human])
+        board[row][col] = human
+       
         x=checkWinner()
-        
         if x == 'X' or x == 'O': 
-
+            messagebox.showinfo("Congrats!!","'"+x+"' has won")
             print(x,'WINS!')
+            reset()
 
         elif x ==  'tie': 
+            messagebox.showinfo("Tied!!","The match ended in a draw")
             print("its a "+x)
+            reset()
             return
- 
-
-        currentPlayer = ai
-
-        x,currentPlayer = best_move(currentPlayer)
-
-    
-       
-        if x == 'null':
-
-            playersTurn(currentPlayer)
-
- 
-
-        if x == 'X' or x == 'O': 
-
-            print(x,'WINS!')
-
-        elif x ==  'tie': print("its a "+x)
-
-        return 
-
- 
-
         
+        currentPlayer = ai
+        # label.config(text="computer's Chance")
+        whoseTurn.set("Computer's Turn")
+        x,currentPlayer = best_move(currentPlayer)
+        whoseTurn.set('Humans Turn')
+        if x == 'X' or x == 'O': 
+            messagebox.showinfo("Congrats!!","'"+x+"' has won")
+            print(x,'WINS!')
+            reset()
 
- 
+        elif x ==  'tie': 
+            messagebox.showinfo("Tied!!","The match ended in a draw")
+            print("its a "+x)
+            reset()
+            return
+###############   Main Program #################
+whoseTurn = StringVar()
+whoseTurn.set("Human's Turn")
 
-playersTurn(currentPlayer)
+for i in range(3):
+        for j in range(3):
+                b[i].append(button(root)) 
+                b[i][j].config(command= lambda row=i,col=j:click(row,col))
+                # if yo: print('heha')
+                b[i][j].grid(row=i,column=j)
 
+print('here')
+# if currentPlayer == human:                
+label=Label(textvariable=whoseTurn,font=('arial',20,'bold'))
+# elif currentPlayer == ai:
+
+label.grid(row=3,column=0,columnspan=3)
+root.mainloop()
